@@ -52,18 +52,87 @@ function playVideoOnScroll(){
   Funcion que inicializa todos los procesos del Proyecto
 */
 function init(){
-
+    $("#mostrarTodos").on('click', ()=>{
+        var reg = $(".registro").length;
+        if(reg > 0){
+            $(this).attr("disabled", "true");
+        }else{
+            showRecords();
+        }
+        
+    })
 }
 
 /*
   Funciones que crean las listas desplegables de Ciudad y Tipo
 */
+function createOptions(){
+        $.ajax({
+        url: "./filtroOpciones.php",
+        dataType: "json",
+        type: 'POST',
+        data: {iterator:iterator},    
+        success: function(response){
+            alert(response.op1);
+            //alert(response.opcion2);
+        }
+      })
+      
+}
 
 
 /*
   Funcion que muestra todos los registros
 */
+function showRecords(){
+    for(var iterator=0; iterator<101; iterator++){
+        $.ajax({
+        url: "./buscador.php",
+        dataType: "json",
+        type: 'POST',
+        data: {iterator:iterator},    
+        success: function(response){
+            createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio)
+        }
+      })
+    }
+}
 
-init();
+//Funcion que crea el card que muestra el registro y lo añade al contenedor
+function createCard(direccion, ciudad, telefono, codigoP, tipo, precio){
+    var contenedor = $(".colContenido");
+    var registro = '<div class="row registro">'+
+                  '<div class="col s12">'+
+                      '<div class="card componenteReg">'+
+                          '<div class="card-image">'+
+                              '<img src="img/home.jpg">'+
+                          '</div>'+
+                          '<div class="card-stacked ">'+
+                            '<div class="card-content">'+
+                                '<ul class="listaReg">'+
+                                    '<li><strong>Dirección:</strong>'+direccion+'</li>'+
+                                    '<li><strong>Ciudad:</strong>'+ciudad+'</li>'+
+                                    '<li><strong>Teléfono:</strong>'+telefono+'</li>'+
+                                    '<li><strong>Código Postal:</strong>'+codigoP+'</li>'+
+                                    '<li><strong>Tipo:</strong>'+tipo+'</li>'+
+                                    '<li><strong>Precio:</strong>'+precio+'</li>'+
+                                '</ul>'+
+                            '</div>'+
+                            '<div class="card-action">'+
+                              '<a href="#">VER MAS</a>'+
+                            '</div>'+
+                          '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'   
+    $(contenedor).append(registro);
+}
+
 inicializarSlider();
 playVideoOnScroll();
+
+$(document).ready(function(){
+    $('select').material_select();
+    init();
+    createOptions();
+});

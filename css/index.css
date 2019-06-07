@@ -143,3 +143,30 @@ video#vidFondo {
 .card-action{
   text-align: right;
 }
+
+.registro{
+    padding: 0;
+    margin: 0;
+}
+
+.card-image{
+   width: 40%;
+}
+
+.card .card-action{
+    padding: 10px;
+}
+
+.card .card-content{
+    padding-bottom: 5px;
+}
+
+.componenteReg{
+    display: flex;
+}
+
+.listaReg{
+    padding: 0;
+    margin: 0;
+}
+

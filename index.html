@@ -20,7 +20,7 @@
       <h1>Buscador</h1>
     </div>
     <div class="colFiltros">
-      <form action="buscador.php" method="post" id="formulario">
+      <form action="" method="post" id="formulario">
         <div class="filtrosContenido">
           <div class="tituloFiltros">
             <h5>Realiza una búsqueda personalizada</h5>
@@ -28,13 +28,13 @@
           <div class="filtroCiudad input-field">
             <label for="selectCiudad">Ciudad:</label>
             <select name="ciudad" id="selectCiudad">
-              <option value="" selected>Elige una ciudad</option>
+              <option value="" disabled selected>Elige una ciudad</option>
             </select>
           </div>
           <div class="filtroTipo input-field">
             <label for="selecTipo">Tipo:</label><br>
             <select name="tipo" id="selectTipo">
-              <option value="" selected>Elige un tipo</option>
+              <option value="" disabled selected>Elige un tipo</option>
             </select>
           </div>
           <div class="filtroPrecio">
@@ -54,9 +54,9 @@
         <div class="divider"></div>
         <button type="button" name="todos" class="btn-flat waves-effect" id="mostrarTodos">Mostrar Todos</button>
       </div>
-
     </div>
-  </div>
+</div>
+      
 
   <script type="text/javascript" src="js/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="js/ion.rangeSlider.min.js"></script>

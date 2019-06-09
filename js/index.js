@@ -55,14 +55,14 @@ function init(){
     $("#mostrarTodos").on('click', ()=>{
         var reg = $(".registro").length;
         if(reg > 0){
-            $(this).attr("disabled", "true");
+            $(".registro").remove();
+            showRecords();
         }else{
             showRecords();
         }
-        
     })
     
-    $("#formulario").submit(function(e){
+    $("#formulario").submit((e)=>{
         e.preventDefault();
         
         var reg = $(".registro").length;
@@ -187,14 +187,38 @@ function formSearch(){
                 removeItemFromArr(cadenaPrecio, ",");
                 
                 var precioReg = parseInt(cadenaPrecio.join(""));
-                   
+                
+                if(selectCiudad == null){
+                    if(selectTipo == null){
+                        if(precioReg > from && precioReg < to){
+                            createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio);    
+                        }
+                    }
+                }
+                
+                if(selectCiudad == null){
+                    if(selectTipo == response.Tipo){
+                        if(precioReg > from && precioReg < to){
+                            createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio);    
+                        }
+                    }
+                }
+                
+                if(selectCiudad == response.Ciudad){
+                    if(selectTipo == null){
+                        if(precioReg > from && precioReg < to){
+                            createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio);    
+                        }
+                    }
+                }
+                
                 if(selectCiudad == response.Ciudad){
                     if(selectTipo == response.Tipo){
                         if(precioReg > from && precioReg < to){
                             createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio);    
                         }
                     }
-                }           
+                }          
             }
       })
     }

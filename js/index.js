@@ -61,6 +61,19 @@ function init(){
         }
         
     })
+    
+    $("#formulario").submit(function(e){
+        e.preventDefault();
+        
+        var reg = $(".registro").length;
+        if(reg > 0){
+            $(".registro").remove();
+            formSearch();
+        }else{
+            formSearch();
+        }
+      });
+    
 }
 
 /*
@@ -70,16 +83,39 @@ function createOptions(){
         $.ajax({
         url: "./filtroOpciones.php",
         dataType: "json",
-        type: 'POST',
-        data: {iterator:iterator},    
+        type: 'POST',  
         success: function(response){
-            alert(response.op1);
-            //alert(response.opcion2);
+            $(".filtroCiudad select").remove();
+            $(".filtroTipo .select-wrapper").remove();
+            var selectorCiudad = $(".filtroCiudad");
+            var selectorTipo = $(".filtroTipo");
+            
+            var opcionesCiudad = '<select name="ciudad" id="selectCiudad">'+
+              '<option value="" disabled selected>Elige una ciudad</option>'+
+              '<option value="'+response.opcionCiudad1+'">'+response.opcionCiudad1+'</option>'+
+              '<option value="'+response.opcionCiudad2+'" >'+response.opcionCiudad2+'</option>'+
+              '<option value="'+response.opcionCiudad3+'" >'+response.opcionCiudad3+'</option>'+
+              '<option value="'+response.opcionCiudad4+'" >'+response.opcionCiudad4+'</option>'+
+              '<option value="'+response.opcionCiudad5+'" >'+response.opcionCiudad5+'</option>'+
+              '<option value="'+response.opcionCiudad6+'" >'+response.opcionCiudad6+'</option>'+    
+            '</select>';
+              
+            var opcionesTipo = '<select name="tipo" id="selectTipo">'+
+                '<option value="" disabled selected>Elige un tipo</option>'+
+                '<option value="'+response.opcionTipo1+'">'+response.opcionTipo1+'</option>'+
+                '<option value="'+response.opcionTipo2+'" >'+response.opcionTipo2+'</option>'+
+                '<option value="'+response.opcionTipo3+'" >'+response.opcionTipo3+'</option>'+
+                '</select>';
+                
+            $(selectorCiudad).append(opcionesCiudad);
+            $(selectorTipo).append(opcionesTipo);
+
+            $('.filtroCiudad select').material_select();
+            $('.filtroTipo select').material_select();
         }
       })
       
 }
-
 
 /*
   Funcion que muestra todos los registros
@@ -92,7 +128,7 @@ function showRecords(){
         type: 'POST',
         data: {iterator:iterator},    
         success: function(response){
-            createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio)
+            createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio);
         }
       })
     }
@@ -128,11 +164,59 @@ function createCard(direccion, ciudad, telefono, codigoP, tipo, precio){
     $(contenedor).append(registro);
 }
 
+/*
+    Funcion que crea el card segun la informacion del formulario
+*/
+function formSearch(){
+    var slider = $("#rangoPrecio").data("ionRangeSlider");
+
+    var from = slider.result.from;
+    var to = slider.result.to;
+    var selectCiudad = $("#selectCiudad").val();
+    var selectTipo = $("#selectTipo").val();
+    
+    for(var iterator=0; iterator<101; iterator++){
+        $.ajax({
+            url: "./buscador.php",
+            dataType: "json",
+            type: 'POST',
+            data: {iterator:iterator},    
+            success: function(response){
+                var cadenaPrecio = response.Precio.split("");
+                removeItemFromArr(cadenaPrecio, "$");
+                removeItemFromArr(cadenaPrecio, ",");
+                
+                var precioReg = parseInt(cadenaPrecio.join(""));
+                   
+                if(selectCiudad == response.Ciudad){
+                    if(selectTipo == response.Tipo){
+                        if(precioReg > from && precioReg < to){
+                            createCard(response.Direccion, response.Ciudad, response.Telefono, response.Codigo_Postal, response.Tipo, response.Precio);    
+                        }
+                    }
+                }           
+            }
+      })
+    }
+}
+
+/*
+    Funcion que elimina un elemento de un array
+*/
+function removeItemFromArr ( arr, item ) {
+    var i = arr.indexOf( item );
+ 
+    if ( i !== -1 ) {
+        arr.splice( i, 1 );
+    }
+}
+
 inicializarSlider();
 playVideoOnScroll();
 
 $(document).ready(function(){
     $('select').material_select();
     init();
-    createOptions();
+    createOptions();    
+    
 });
